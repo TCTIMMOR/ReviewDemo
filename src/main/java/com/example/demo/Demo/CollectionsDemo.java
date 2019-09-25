@@ -1,6 +1,7 @@
 package com.example.demo.Demo;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -15,7 +16,9 @@ public class CollectionsDemo {
 
         //arrayListConcurrentModificationException();
 
-        hashSetConcurrentModificationException();
+        //hashSetConcurrentModificationException();
+
+        mapConcurrentModificationException();
     }
 
     /**
@@ -121,7 +124,7 @@ public class CollectionsDemo {
      *             lock.unlock();
      *         }
      */
-    public static void hashSetConcurrentModificationException  () {
+    public static void hashSetConcurrentModificationException() {
 
         Set<String> hashSet = new HashSet<>();
         // 方案
@@ -132,6 +135,20 @@ public class CollectionsDemo {
                 copyOnWriteArraySet.add(UUID.randomUUID().toString().substring(0, 8));
                 System.out.println(Thread.currentThread().getName() + " ---- " + copyOnWriteArraySet.toString());
 
+            }, String.valueOf(i)).start();
+        }
+    }
+
+    public static void mapConcurrentModificationException() {
+
+        Map<String, String> hashMap = new HashMap<>();
+
+        Map<String, String> concurrentHashMap = new ConcurrentHashMap<>();
+
+        for (int i = 0; i < 30; i++) {
+            new Thread(() -> {
+                concurrentHashMap.put(Thread.currentThread().getName(), UUID.randomUUID().toString().substring(0, 8));
+                System.out.println(Thread.currentThread().getName() + " ---- " + concurrentHashMap.toString());
             }, String.valueOf(i)).start();
         }
     }
